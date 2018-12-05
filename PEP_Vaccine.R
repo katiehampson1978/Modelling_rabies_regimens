@@ -225,7 +225,7 @@ polygon(c(patients, sort(patients, decreasing=T)),
         border=NA, col="pink")
 lines(patients, costPRDAwaste[7,], col="indianred1", lwd=2)
 text(150, 17, "1-week 2-site", col="indianred1")
-
+mtext("A", line =-3, side=3, adj=0, cex=1.5)
 
 ############## 1 mL vials
 par(cex=0.7, new=TRUE, lwd=0.5, plt=c(0.4, 0.67, 0.1, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
@@ -274,6 +274,7 @@ polygon(c(patients, sort(patients, decreasing=T)),
         c(costPRDAwasteuci1[7,], costPRDAwastelci1[7,length(patients):1]),
         border=NA, col="pink")
 lines(patients, costPRDAwaste1[7,], col="indianred1", lwd=2)
+mtext("B", line =-3, side=3, adj=0, cex=1.5)
 
 ########################################################################
 # # INSULIN SYRINGES - 1mL syringes - show overlapping lines
@@ -295,6 +296,7 @@ lines(patients, costPRDA1insulin[7,], col="indianred1", lwd=2, lty=2)
 lines(patients, costPRDAwaste1[7,], col="indianred1", lwd=2)
 text(150, 14, "Standard syringe", col="indianred1")
 text(150, 8, "Insulin syringe", col="indianred1")
+mtext("C", line =-3, side=3, adj=0, cex=1.5)
 
 dev.off()
 
@@ -333,17 +335,166 @@ bp=barplot(patients250[c(2,1,6,4,7)],
            axisnames = FALSE, main="250 vials available",
            col=cols, ylim=c(0,1000), ylab="Patients treated")
 text(bp, par("usr")[3], labels = bars, srt = 60, adj = 1, xpd = TRUE, cex=1)
+mtext("D", line = 1, side=3, adj=-0.1, cex=1.5)
 
 par(cex=0.75, new=TRUE, lwd=0.5, plt=c(0.375, 0.675, 0.35, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
 bp=barplot(patients1000[c(2,1,6,4,7)],
            axisnames = FALSE, main="1000 vials available", col=cols, ylim=c(0,1000))
 text(bp, par("usr")[3], labels = bars, srt = 60, adj = 1, xpd = TRUE, cex=1)
+mtext("E", line = 1, side=3, adj=-0.1, cex=1.5)
 
 par(cex=0.75, new=TRUE, lwd=0.5, plt=c(0.7, 1, 0.35, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
 bp=barplot(patients3500[c(2,1,6,4,7)],
            axisnames = FALSE, main="3500 vials available", col=cols, ylim=c(0,7000))
 text(bp, par("usr")[3], labels = bars, srt = 60, adj = 1, xpd = TRUE, cex=1)
+mtext("F", line = 1, side=3, adj=-0.1, cex=1.5)
 dev.off()
+
+
+
+postscript(file="figs/Fig1_combined.eps", width=9, height=8, horizontal=F)
+par(cex=0.7, lwd=0.5, plt=c(0.1, 0.37, 0.5, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
+plot(patients, rep(NA, length(patients)), ylim=c(0,250*prabies), type="l", lwd=2, log="x", axes=FALSE,
+     xlab="",
+     ylab="Direct medical costs per patient treated (USD)")
+axis(2, lwd=0.5); axis(1, lwd=0.5)
+text(30, 250*prabies, "0.5mL vials", font=2)
+
+# IM - # ZAGREB or ESSEN
+lines(patients, costPRDA[3,], col="black", lwd=2, lty=1)
+text(150, 225*prabies, "IM")
+
+# TRC4 (dark red)
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci[1,], costPRDAwastelci[1,length(patients):1]),
+        border=NA, col="red")
+lines(patients, costPRDAwaste[1,], col="dark red", lwd=2)
+text(140, 140*prabies, "Updated TRC", col="dark red")
+
+# 1-week 4-site ID (red)
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci[6,], costPRDAwastelci[6,length(patients):1]),
+        border=NA, col="indianred1")
+lines(patients, costPRDAwaste[6,], col="dark red", lwd=2)
+text(140, 34, "1-week 4-site", col="dark red")
+
+# 1-month simplified 4-site (orange), - normal syringes (waste)
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci[4,], costPRDAwastelci[4,length(patients):1]),
+        border=NA, col="tan1")
+lines(patients, costPRDAwaste[4,], col="darkorange2", lwd=2)
+text(130, 113*prabies, "    1-month \n simplified 4-site", col="darkorange2")
+
+# IPC (light red) - (no waste)
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci[7,], costPRDAwastelci[7,length(patients):1]),
+        border=NA, col="pink")
+lines(patients, costPRDAwaste[7,], col="indianred1", lwd=2)
+text(150, 17, "1-week 2-site", col="indianred1")
+mtext("A", line =-3, side=3, adj=-0.1, cex=1.5)
+
+############## 1 mL vials
+par(cex=0.7, new=TRUE, lwd=0.5, plt=c(0.4, 0.67, 0.5, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
+plot(patients, rep(NA, length(patients)), ylim=c(0,250*prabies), type="l", lwd=2, log="x", axes=FALSE,
+     xlab="Monthly clinic throughput (new bite patients)",
+     ylab="")
+axis(2, lwd=0.5); axis(1, lwd=0.5)
+text(30, 250*prabies, "1mL vials", font=2)
+
+# IM - ZAGREB or ESSEN
+lines(patients, costPRDA[3,], col="black", lwd=2, lty=1)
+
+# TRC4 (dark red)
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci1[1,], costPRDAwastelci1[1,length(patients):1]),
+        border=NA, col="red")
+lines(patients, costPRDAwaste1[1,], col="dark red", lwd=2)
+
+# weekID (red)
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci1[6,], costPRDAwastelci1[6,length(patients):1]),
+        border=NA, col="indianred1")
+lines(patients, costPRDAwaste1[6,], col="dark red", lwd=2)
+
+# SAME - BUT SHOW WITH 0.1ml INJ!!! (MW)
+# ID4 (orange), - normal syringes (waste) - 1-month simplified 4-site ID
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAuci_4site0.1ml, costPRDAlci_4site0.1ml[length(patients):1]),
+        border=NA, col="tan1")
+lines(patients, costPRDA_4site0.1ml, col="darkorange2", lwd=2, lty=1)
+
+# IPC (light red) - (waste)
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci1[7,], costPRDAwastelci1[7,length(patients):1]),
+        border=NA, col="pink")
+lines(patients, costPRDAwaste1[7,], col="indianred1", lwd=2)
+mtext("B", line =-3, side=3, adj=-0.1, cex=1.5)
+
+########################################################################
+# # INSULIN SYRINGES - 1mL syringes - show overlapping lines
+par(cex=0.7, new=TRUE, lwd=0.5, plt=c(0.7, 0.97, 0.5, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
+plot(patients, rep(NA, length(patients)), ylim=c(0,250*prabies), type="l", lwd=2, log="x", axes=FALSE,
+     xlab="", ylab="")
+axis(2, lwd=0.5); axis(1, lwd=0.5)
+text(30, 250*prabies, "1mL vials", font=2)
+lines(patients, costPRDA[3,], col="black", lwd=2, lty=1)
+
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAwasteuci1[7,], costPRDAwastelci1[7,length(patients):1]),
+        border=NA, col="pink")
+
+polygon(c(patients, sort(patients, decreasing=T)),
+        c(costPRDAuci1insulin[7,], costPRDAlci1insulin[7,length(patients):1]),
+        border=NA, col="pink")
+lines(patients, costPRDA1insulin[7,], col="indianred1", lwd=2, lty=2)
+lines(patients, costPRDAwaste1[7,], col="indianred1", lwd=2)
+text(150, 14, "Standard syringe", col="indianred1")
+text(150, 8, "Insulin syringe", col="indianred1")
+mtext("C", line =-3, side=3, adj=-0.1, cex=1.5)
+
+# Look at vial use for different regimens
+# Patients
+vuse250 = vuse1000 = vuse3500 = rep(NA, length(regimens))
+patients # is a list of 10 throughoputs per MONTH
+med_value = 3 # Median estimate of vials used
+
+
+for(i in 1:length(regimens)){ # for each regimen
+  vuse250[i] = vuse1[[i]][2, med_value] # select the median vials used for 5 patients/ month (patients[2]) i.e. 60 patients
+  vuse1000[i] = vuse1[[i]][4, med_value] # for 20 patients/ month (patients[4]) i.e. 240 patients
+  vuse3500[i] = vuse1[[i]][8, med_value] # for 75 patients/ month (patients[8]) i.e. 900 patients
+}
+
+#
+patients250 = vuse250[2]*(5*12)/vuse250 # vials used for / vials used for each regimen
+patients1000 = vuse1000[2]*(20*12)/vuse1000
+patients3500 = vuse3500[2]*(75*12)/vuse3500
+
+names(regimens)[c(2,1,6,4,7)]
+bars = c("IM ", "Updated TRC ", "1-week 4-site ID", "1 month simplified 4-site ID", "1-week 2-site ID ")
+cols = c("black", "red", "indianred1", "tan1", "pink")
+
+# regimens - essen4, weekIM1, UTRC, ID4, IPC c(2,8,1,4,7)
+par(cex=0.7, new=TRUE, lwd=0.5, plt=c(0.1, 0.37, 0.1, 0.4), mgp=c(1.2,0.2,0), tck=-0.01)
+bp=barplot(patients250[c(2,1,6,4,7)],
+           axisnames = FALSE, main="250 vials available",
+           col=cols, ylim=c(0,1000), ylab="Patients treated")
+text(bp, par("usr")[3], labels = bars, srt = 60, adj = 1, xpd = TRUE, cex=1)
+mtext("D", line = 1, side=3, adj=-0.1, cex=1.5)
+
+par(cex=0.7, new=TRUE, lwd=0.5, plt=c(0.4, 0.67, 0.1, 0.4), mgp=c(1.2,0.2,0), tck=-0.01)
+bp=barplot(patients1000[c(2,1,6,4,7)],
+           axisnames = FALSE, main="1000 vials available", col=cols, ylim=c(0,1000))
+text(bp, par("usr")[3], labels = bars, srt = 60, adj = 1, xpd = TRUE, cex=1)
+mtext("E", line = 1, side=3, adj=-0.1, cex=1.5)
+
+par(cex=0.7, new=TRUE, lwd=0.5, plt=c(0.7, 0.97, 0.1, 0.4), mgp=c(1.2,0.2,0), tck=-0.01)
+bp=barplot(patients3500[c(2,1,6,4,7)],
+           axisnames = FALSE, main="3500 vials available", col=cols, ylim=c(0,7000))
+text(bp, par("usr")[3], labels = bars, srt = 60, adj = 1, xpd = TRUE, cex=1)
+mtext("F", line = 1, side=3, adj=-0.1, cex=1.5)
+dev.off()
+
 
 patients_treated = data.frame(regimen = bars, patients = patients1000[c(2,8,1,4,7)])
 write.csv(patients_treated, "output/patients_treated.csv", row.names=FALSE)
