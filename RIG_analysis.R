@@ -24,12 +24,10 @@
 #                            Load in Libraries                                #
 ###############################################################################
 rm(list=ls())
-
 library(dplyr)
-library(ContactTracing)
 require(bbmle)
 
-RIG <- read.csv("data/RIG_OmeshBharti.csv")
+RIG <- read.csv("data/RIG_OB_anon.csv")
 nrow(RIG)
 
 # clean up weight
@@ -72,10 +70,12 @@ df <- dplyr::select(RIG, Site.of.wnd, RIGs.Vol.Actually.Given, Wt)
 # Use function to transform free text of bite location to the set 6 columns:
 # Head, Arm, Hand, Trunk, Leg, Foot
 table(df$Site.of.wnd)
-df2 <- ContactTracing:::bite.loc(df, bite.site.col="Site.of.wnd")
+source("R/add_bite_loc.R")
+df2 <- add_bite_loc(df, bite.site.col="Site.of.wnd")
+table(df2$Bite.site.Head...neck) # could not assign bite location for 20 patients
 
 # Add information on bite location to a single new column
-for(m in 1:nrow(df2)){
+for(m in 1:nrow(df)){
   if(df2[["Bite.site.Head...neck"]][m]=="true"){
     df2$Bite.loc[m] <- "Head"
   } else if(df2[["Bite.site.Arms"]][m]=="true"){
@@ -98,11 +98,10 @@ table(df2$Bite.loc)
 table(df2$Bite.loc)/sum(table(df2$Bite.loc))
 
 # NOTE 30 bites do not have locations. Which ones?
-df2$Site.of.wnd[which(is.na(df2$Bite.loc))]
-# I would treat multi wounds as high risk! Scepult/ Scaplt - is trunk?
+df2$Site.of.wnd[which(is.na(df2$Bite.loc))] # I would treat multi wounds as high risk! Scepult/ Scaplt - is trunk?
 
 # Plot of RIG volume as counts
-rig.dose.breaks <- c(0,0.1,0.25,0.5,1,2,3,4,5,6,7,8,9)
+rig.dose.breaks <- c(0,0.1,0.25,0.5,1:9)
 rig.hist = hist(RIG$RIGs.Vol.Actually.Given, breaks=rig.dose.breaks)
 pdf("figs/patients_RIG_vol.pdf")
 plot(rig.hist$counts, xaxt = "n", xlab="IU", ylab="Patients", type="l")
@@ -131,7 +130,7 @@ mean(RIG$RIGs.Vol.Actually.Given); mean(RIG$Wt*40/1000, na.rm=TRUE)
 RIG$Wt[which(is.na(RIG$Wt))] <- mean(RIG$Wt, na.rm=TRUE) # replace the NA
 
 # Function to calculate RIG volume given type and potency
-RIGweight = function(type = "ERIG", IU = 550, patient_weight){
+RIGweight = function(type = "ERIG", IU = 300, patient_weight){ # IU = 550
   if(type=="ERIG"){ vol = (patient_weight * 40)/IU
   } else { vol = (patient_weight * 20)/IU }
   vol
@@ -278,6 +277,7 @@ p_wound = (v - coef(m1)["(Intercept)"])/ coef(m1)["tlinear"] # For wound
 p_wt = (v - coef(m1wt)["(Intercept)"])/ coef(m1wt)["tlinear"] # For weight
 bars = c("wound + IM", "wound only")
 
+# Previous plot set up (for 550 IU / vial)
 postscript(file="figs/patients_treated_RIG.eps", width=10, height=4, horizontal=F)
 par(cex=0.65, lwd=0.5, plt=c(0.05, 0.35, 0.2, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
 bp=barplot(c(p_wt[1], p_wound[1]),
@@ -297,6 +297,7 @@ text(bp, par("usr")[3], labels = bars, srt = 60, adj = 1, xpd = TRUE, cex=1.2)
 
 dev.off()
 
+# plot set up for paper (for 300 IU / vial)
 postscript(file="figs/patients_treated_RIG_2.eps", width=5, height=4, horizontal=F)
 par(cex=0.75, lwd=0.5, plt=c(0.05, 0.35, 0.2, 0.9), mgp=c(1.2,0.2,0), tck=-0.01)
 bp=barplot(c(p_wt[2], p_wound[2]),
@@ -318,13 +319,15 @@ dev.off()
 # 107.090, 1138.786, 6641.165
 # 175.0547,  6739.6061, 41750.5470
 
+
+#____________________________________Additional exploring ____________________________________________
 # When 1000 vials are available:
 # 1139 patients can be treated under current policy (by weight)
 # wheras 6740 can be treated assuming administration at the wound site only
 # i.e. 6749/1139 = 5.9x more patients can be treated OR 6749-1139 = 5610 more patients can be treated!
 
 
-# Omesh sees 8-10 people per day
+# OB sees 8-10 people per day
 p = 9*365/12; p # 273 patients per month
 v1 = coef(m1)["(Intercept)"] + coef(m1)["tlinear"]*p # 262 vials
 v2 = coef(m1wt)["(Intercept)"] + coef(m1wt)["tlinear"]*p # 369 vials
@@ -357,7 +360,7 @@ lines(patients*12, treated_wound[,3])
 lines(patients*12, treated_wound[,5])
 lines(patients*12, treated_wound[,8])
 
-# FOR GAVI MODELING:
+# FOR GAVI MODELING: in Lancet ID paper used numbers from 550 IU vials
 write.csv(data.frame(throughput = patients,
                      dose_wound = patient_dose_wound,
                      dose_weight = patient_dose_wt),
