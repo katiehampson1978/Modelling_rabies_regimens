@@ -18,20 +18,20 @@ TRC4 = c(2,2,2,0,0,2,0)       #ID reduced 4 dose TRC
 ID4 = c(4,0,2,0,0,1,0)        #ID 4-site economical - 3 visits (1-month simplified 4-site ID)
 ID4v2 = c(4,0,2,0,0,0,0)		  #ID 4-site economical - 2 visits (MW)
 weekID=c(4,4,4,0,0,0,0)       #ID 1-week - Narayana et al, Shantavasinkul et al, Sudarshen et al.
-IPC = c(2,2,2,0,0,0,0)
+IPC = c(2,2,2,0,0,0,0)        #ID 1-week 2-site (IPC)
 weekIM1 = c(1,1,1,0,0,0,0)
 weekIM2 = c(2,0,1,0,0,0,0) # Huang et al
 
 # All different regimens combined (9)
 regimens=list(TRC4=c(2,2,2,0,0,2,0), # Default ID
               essen4=c(1,1,1,1,0,0,0) , zagreb=c(2,0,1,0,1,0,0), # Default IM
-              ID4=c(4,0,2,0,0,1,0), ID4v2=c(4,0,2,0,0,0,0), # Mary Warrell
+              ID4=c(4,0,2,0,0,1,0), ID4v2=c(4,0,2,0,0,0,0), # M Warrell
               weekID=c(4,4,4,0,0,0,0), # Under investigation ID
               IPC=c(2,2,2,0,0,0,0), # Under investigation ID
               weekIM1=c(1,1,1,0,0,0,0), weekIM2=c(2,0,1,0,0,0,0)) # Under investigation IM
 
 v=data.frame(regimen = c("TRC4", "essen4", "zagreb", # Default
-              "ID4", "ID4v2", # Mary Warrell
+              "ID4", "ID4v2", # M Warrell
               "weekID", "IPC", "weekIM1", "weekIM2")) # Under investigation IM
 v$vdoses_waste = c(4,1,1,4,4,4,4,1,1)
 v$vdoses_nowaste = c(5,1,1,5,5,5,5,1,1)
@@ -80,6 +80,7 @@ material2=(14.55/100)/2 # ID insulin syringes - 1 needle per patient
 
 #####################################################################################
 # CALCULATE COSTS PER RABIES DEATH AVERTED
+# extract vaccine simulation outputs - created in: PEP_IDvIM_v3.R
 vuse0.5 = vuse1 = vuse0.5waste = vuse1waste = vuse0.5insulin = vuse1insulin = list() #
 
 for (i in 1: length(regimens)){
@@ -138,7 +139,6 @@ for (i in 1:length(regimens)){
   costPRDAuci1insulin[i,] = costs(overhead, material2, vial.cost, patients, as.data.frame(vuse1[i])[,1], unlist(regimens[i]))/PT
   costPRDAlci1insulin[i,] = costs(overhead, material2, vial.cost, patients, as.data.frame(vuse1[i])[,5], unlist(regimens[i]))/PT
 
-  # MARY WARRELL
   # 0.5ml vials - some waste
   costPRDAwaste[i,] = costs(overhead, material1, vial.cost, patients, as.data.frame(vuse0.5waste[i])[,3], unlist(regimens[i]))/PT
   costPRDAwasteuci[i,] = costs(overhead, material1, vial.cost, patients, as.data.frame(vuse0.5waste[i])[,1], unlist(regimens[i]))/PT
@@ -224,7 +224,7 @@ polygon(c(patients, sort(patients, decreasing=T)),
         c(costPRDAwasteuci[7,], costPRDAwastelci[7,length(patients):1]),
         border=NA, col="pink")
 lines(patients, costPRDAwaste[7,], col="indianred1", lwd=2)
-text(150, 17, "1-week", col="indianred1")
+text(150, 17, "1-week 2-site", col="indianred1")
 
 
 ############## 1 mL vials
@@ -301,7 +301,7 @@ dev.off()
 
 # Look at vial use for different regimens
 # Assume limited vaccine access in clinc - with 1ml vials because most effective:
-# 250 vials - Essen 20 patients - vuse1[[2]][2,3]
+# 250 vials - Essen 5 patients - vuse1[[2]][2,3]
 # 1000 vials - Essen 20 patients - vuse1[[2]][4,3]
 # 3500 vials - Essen 100 patients - vuse1[[2]][8,3]
 
@@ -314,11 +314,11 @@ for(i in 1:length(regimens)){
   vuse3500[i] = vuse1[[i]][8,3] # for 75 patients/ month
 }
 
-patients250=vuse250[2]*(20*12)/vuse250 # vials used for  /vials used for each regimen - 5 patients/month
+patients250=vuse250[2]*(5*12)/vuse250 # vials used for  /vials used for each regimen - 5 patients/month
 patients1000=vuse1000[2]*(20*12)/vuse1000
 patients3500=vuse3500[2]*(100*12)/vuse3500
 names(regimens)[c(2,1,6,4,7)]
-bars = c("IM ", "Updated TRC ", "1-week 4-site ID", "1 month simplified 4-site ID", "1-week ID ")
+bars = c("IM ", "Updated TRC ", "1-week 4-site ID", "1 month simplified 4-site ID", "1-week 2-site ID ")
 cols = c("black", "red", "indianred1", "tan1", "pink")
 
 # regimens - essen4, weekIM1, UTRC, ID4, IPC c(2,8,1,4,7)

@@ -46,7 +46,7 @@ source("R/PEPfunctions.R")
 
 #look at different numbers of vials used for different regimens
 patients=c(1,5,10,20,30,40,50,75,100,500) # New patients per month
-reps = 10 # increase to 1000
+reps = 500 # increase to 1000
 
 #___________________________________________________________
 # PrEP
