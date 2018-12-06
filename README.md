@@ -7,4 +7,6 @@ Scripts and data to model Rabies Post-Exposure Prophylaxis regimens and comparis
 
 Figures that are generated from the scripts and data are provided in subfolder: *figs/paper*
 
+Outputs of simulations are saved in the subfolder: *figs/outputs*
+
 Full details are described in: https://doi.org/10.1016/j.vaccine.2018.11.010
