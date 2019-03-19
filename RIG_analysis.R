@@ -232,6 +232,9 @@ throughput = patients * 12
 RIGvol = patient_dose_wound*throughput
 RIGvol2 = patient_dose_wt*throughput
 
+patient_dose_wound[4]*270
+patient_dose_wt[4]*270
+
 # plots of vial use versus throughput
 par(mfrow=c(1,2), mar=c(3,3,1,1))
 plot(patients*12, patient_dose_wound*throughput,
